@@ -35,9 +35,8 @@
   const options = document.querySelectorAll('[type="range"], [name="text"]');
   const speakButton = document.querySelector('#speak');
   const stopButton = document.querySelector('#stop');
-
   //Your code goes here
-	 // Populate voice list
+ // Populate voice list
   function populateVoices() {
     voices = speechSynthesis.getVoices();
     if (voices.length === 0) {
@@ -98,6 +97,7 @@
 
   // Initial population of voices (some browsers require a slight delay)
   window.speechSynthesis.onvoiceschanged = populateVoices;
+	
 </script>
 
 </body>
