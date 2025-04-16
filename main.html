@@ -37,6 +37,67 @@
   const stopButton = document.querySelector('#stop');
 
   //Your code goes here
+	 // Populate voice list
+  function populateVoices() {
+    voices = speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      voicesDropdown.innerHTML = '<option value="">No voices available</option>';
+      return;
+    }
+
+    voicesDropdown.innerHTML = voices
+      .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
+      .join('');
+  }
+
+  // Set voice
+  function setVoice() {
+    const selectedVoice = voices.find(voice => voice.name === voicesDropdown.value);
+    if (selectedVoice) {
+      msg.voice = selectedVoice;
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        speak();
+      }
+    }
+  }
+
+  // Speak function
+  function speak() {
+    const text = document.querySelector('[name="text"]').value.trim();
+    if (!text) {
+      alert('Please enter text to speak!');
+      return;
+    }
+
+    msg.text = text;
+    speechSynthesis.cancel(); // cancel any ongoing speech
+    speechSynthesis.speak(msg);
+  }
+
+  // Stop speaking
+  function stop() {
+    speechSynthesis.cancel();
+  }
+
+  // Set rate and pitch dynamically
+  function setOption() {
+    msg[this.name] = this.value;
+    if (speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+      speak();
+    }
+  }
+
+  // Event Listeners
+  speechSynthesis.addEventListener('voiceschanged', populateVoices);
+  voicesDropdown.addEventListener('change', setVoice);
+  options.forEach(option => option.addEventListener('change', setOption));
+  speakButton.addEventListener('click', speak);
+  stopButton.addEventListener('click', stop);
+
+  // Initial population of voices (some browsers require a slight delay)
+  window.speechSynthesis.onvoiceschanged = populateVoices;
 </script>
 
 </body>
